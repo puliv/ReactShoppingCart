@@ -23,13 +23,13 @@ const listProducts = [
     img: "https://lovingitvegan.com/wp-content/uploads/2021/08/Tofu-Burger-25-683x1024.jpg",
   },
   {
-    id: 2,
+    id: 3,
     name: "Hamburgesa de seitan",
     price: 8800,
     img: "https://3.bp.blogspot.com/-O0Ti17quqWM/V5SnN2Y_EiI/AAAAAAAASYs/Xazew0vWJoIYtocVBj7WWdkUE8pZk46ygCLcB/s1600/Vegan%2Bmegaburger.jpg",
   },
   {
-    id: 3,
+    id: 4,
     name: "Hamburgesa de berenjenas",
     price: 7490,
     img: "https://th.bing.com/th?id=OIF.0LuXluLGvbnLfrWzcN0%2bZg&rs=1&pid=ImgDetMain",
@@ -70,19 +70,64 @@ function App() {
 
   const deleteItemFromCart = (burger) => {
     setCart((prevCart) => {
+      return prevCart.filter((item) => item.id !== burger.id);
+    });
+    setTotalPriceCart((prev) => prev - burger.price * burger.count);
+  };
+
+  const handleCount = (burger, operation) => {
+    setCart((prevCart) => {
       const found = prevCart.find((item) => item.id === burger.id);
-      if (found.count > 1) {
-        return prevCart.map((item) =>
-          item.id === burger.id ? { ...item, count: item.count - 1 } : item
-        );
-      } else {
-        return prevCart.filter((item) => item.id !== burger.id);
+      if (found) {
+        if (operation === "mas") {
+          setTotalPriceCart((prev) => prev + burger.price);
+          return prevCart.map((item) =>
+            item.id === burger.id ? { ...item, count: item.count + 1 } : item
+          );
+        }
+        if (operation === "menos") {
+          if (found.count > 1) {
+            setTotalPriceCart((prev) => prev - burger.price);
+            return prevCart.map((item) =>
+              item.id === burger.id ? { ...item, count: item.count - 1 } : item
+            );
+          } else {
+            setTotalPriceCart((prev) => prev - burger.price);
+            return prevCart.filter((item) => item.id !== burger.id);
+          }
+        }
+      }
+      return prevCart;
+    });
+  };
+
+  const setEqualHeight = () => {
+    const items = document.querySelectorAll(".cart-item");
+    let maxHeight = 0;
+
+    // Reset height to auto to get natural height
+    items.forEach((item) => {
+      item.style.height = "auto";
+    });
+
+    // Find the max height
+    items.forEach((item) => {
+      const height = item.offsetHeight;
+      if (height > maxHeight) {
+        maxHeight = height;
       }
     });
-    setTotalPriceCart((prev) => prev - burger.price);
+
+    // Set all items to the max height
+    items.forEach((item) => {
+      item.style.height = `${maxHeight}px`;
+    });
   };
 
   useEffect(() => {
+    // Call the function on window load and resize
+    window.addEventListener("load", setEqualHeight);
+    window.addEventListener("resize", setEqualHeight);
     console.log("Cart has changed", cart);
   }, [cart]);
 
@@ -92,21 +137,28 @@ function App() {
         <ul>{showProducts()}</ul>
       </div>
       <div className="shopping-cart">
-        <div className="shopping-cart-list">
-          <ul>
-            {cart &&
-              cart.map((product, idx) => (
-                <li key={idx}>
-                  {product.name} {product.count && product.count}
+        <ul className="shopping-cart-list">
+          {cart &&
+            cart.map((product, idx) => (
+              <li key={idx} className="cart-item">
+                <div className="cart-item-name">{product.name}</div>
+                <div className="cart-item-count">
+                  <button onClick={() => handleCount(product, "menos")}>
+                    -
+                  </button>
+                  {product.count}
+                  <button onClick={() => handleCount(product, "mas")}>+</button>
+                </div>
+                <div className="cart-item-delete">
                   <img
                     src={deleteIcon}
                     alt="alt"
-                    onClick={() => deleteItemFromCart(product, idx)}
+                    onClick={() => deleteItemFromCart(product)}
                   />
-                </li>
-              ))}
-          </ul>
-        </div>
+                </div>
+              </li>
+            ))}
+        </ul>
         <div className="shopping-cart-total">
           <h1>Total: ${totalPriceCart}</h1>
         </div>
