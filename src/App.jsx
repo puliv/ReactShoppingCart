@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import "./scss/App.scss";
-import Cart from "./Cart.jsx";
+// import Cart from "./Cart.jsx";
 import deleteIcon from "./assets/img/delete-icon.png";
+import axios from "axios";
 
 const listProducts = [
   {
@@ -44,7 +45,7 @@ function App() {
   const showProducts = () => {
     return products.map((product, idx) => (
       <li key={idx}>
-        <img className="img-product" src={product.img} alt="" />
+        <img className="img-product" src={product.image} alt="" />
         {product.name}
         <br />${product.price}
         <button className="add-product" onClick={() => AddItemToCart(product)}>
@@ -129,6 +130,25 @@ function App() {
     window.addEventListener("load", setEqualHeight);
     window.addEventListener("resize", setEqualHeight);
     console.log("Cart has changed", cart);
+
+    const fetchRestaurants = async () => {
+      try {
+        // "https://fake-store-api.mock.beeceptor.com/api/products"
+        // const response = await axios.get(
+        //   "https://fake-store-api-2no73ornoa-uc.a.run.app/api/products/all"
+        // );
+        const response = await axios.get("/api/products");
+        console.log(response);
+        // setProducts(response.data);
+        // setLoading(false);
+      } catch (err) {
+        // setError(err);
+        // setLoading(false);
+        console.log(err);
+      }
+    };
+
+    fetchRestaurants();
   }, [cart]);
 
   return (
@@ -141,7 +161,7 @@ function App() {
           {cart &&
             cart.map((product, idx) => (
               <li key={idx} className="cart-item">
-                <div className="cart-item-name">{product.name}</div>
+                <div className="cart-item-name">{product.title}</div>
                 <div className="cart-item-count">
                   <button onClick={() => handleCount(product, "menos")}>
                     -
