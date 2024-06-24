@@ -1,0 +1,43 @@
+.product-list {
+  width: 70%;
+  padding: 0 20px 0;
+  overflow-y: scroll;
+  height: 100%;
+
+  ul {
+    list-style: none;
+    padding: 20px 0 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+
+    li {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 200px;
+      height: auto;
+      background-color: plum;
+      margin: 0 10px 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+
+      .img-product {
+        width: 200px;
+        height: 200px;
+        object-fit: cover;
+      }
+    }
+  }
+}
+
+.add-product {
+  background-color: green;
+  width: auto;
+  height: auto;
+  border-radius: 5px;
+  padding: 5px;
+  border-color: lime;
+}
