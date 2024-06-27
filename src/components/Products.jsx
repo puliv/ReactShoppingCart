@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useGlobalDispatch } from "../context/GlobalState";
 import "../scss/Products.scss";
+import { addToCart } from "../context/actions";
 
 const listProducts = [
   {
@@ -52,28 +53,17 @@ export default function Products() {
         <img className="img-product" src={product.img} alt="" />
         {product.name}
         <br />${product.price}
-        <button className="add-product" onClick={() => addToCart(product)}>
+        <button
+          className="add-product"
+          onClick={() => handleAddItemToCart(product)}
+        >
           Agregar al carrito
         </button>
       </li>
     ));
   };
 
-  // const AddItemToCart = (burger) => {
-  //   setCart((prevCart) => {
-  //     const found = prevCart.find((item) => item.id === burger.id);
-  //     if (found) {
-  //       return prevCart.map((item) =>
-  //         item.id === burger.id ? { ...item, count: item.count + 1 } : item
-  //       );
-  //     } else {
-  //       return [...prevCart, { ...burger, count: 1 }];
-  //     }
-  //   });
-  //   setTotalPriceCart((prev) => prev + burger.price);
-  // };
-
-  const addToCart = (product) => {
+  const handleAddItemToCart = (product) => {
     dispatch(addToCart(product));
   };
 

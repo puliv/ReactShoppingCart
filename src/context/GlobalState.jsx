@@ -1,6 +1,11 @@
 // src/context/GlobalState.js
 import React, { createContext, useContext, useReducer } from "react";
-import { ADD_TO_CART, REMOVE_FROM_CART } from "./actions";
+import {
+  ADD_TO_CART,
+  REMOVE_FROM_CART,
+  INCREMENT_COUNT,
+  DECREMENT_COUNT,
+} from "./actions";
 
 // Crear el contexto
 const GlobalStateContext = createContext();
@@ -15,9 +20,39 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case ADD_TO_CART:
+      const exists = state.cart.find((item) => item.id === action.payload.id);
+      if (exists) {
+        return {
+          ...state,
+          cart: state.cart.map((item) =>
+            item.id === action.payload.id
+              ? { ...item, count: item.count + 1 }
+              : item
+          ),
+        };
+      } else {
+        return {
+          ...state,
+          cart: [...state.cart, { ...action.payload, count: 1 }],
+        };
+      }
+    case INCREMENT_COUNT:
       return {
         ...state,
-        cart: [...state.cart, action.payload],
+        cart: state.cart.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, count: item.count + 1 }
+            : item
+        ),
+      };
+    case DECREMENT_COUNT:
+      return {
+        ...state,
+        cart: state.cart.map((item) =>
+          item.id === action.payload.id
+            ? { ...item, count: item.count > 1 ? item.count - 1 : 1 }
+            : item
+        ),
       };
     case REMOVE_FROM_CART:
       return {
