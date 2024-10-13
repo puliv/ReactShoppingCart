@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import deleteIcon from "../assets/img/delete-icon.png";
 import { useGlobalState, useGlobalDispatch } from "../context/GlobalState";
 import {
@@ -24,6 +24,14 @@ function Cart() {
   const handleDecrement = (id) => {
     dispatch(decrementCount(id));
   };
+
+  // Calcular el precio total cuando cambie el carrito
+  useEffect(() => {
+    const total = cart.reduce((sum, product) => {
+      return sum + product.price * product.count;
+    }, 0);
+    setTotalPriceCart(total);
+  }, [cart]);
 
   return (
     <>
